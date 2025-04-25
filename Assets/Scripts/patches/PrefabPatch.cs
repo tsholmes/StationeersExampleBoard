@@ -7,32 +7,37 @@ using UnityEngine;
 using UnityEngine.Rendering;
 namespace ExampleBoard
 {
-    [HarmonyPatch]
-    public class PrefabPatch
+  [HarmonyPatch]
+  public class PrefabPatch
+  {
+    public static ReadOnlyCollection<GameObject> prefabs { get; set; }
+    [HarmonyPatch(typeof(Prefab), "LoadAll")]
+    public static void Prefix()
     {
-        public static ReadOnlyCollection<GameObject> prefabs { get; set; }
-        [HarmonyPatch(typeof(Prefab), "LoadAll")]
-        public static void Prefix()
+      try
+      {
+        Debug.Log("Prefab Patch started");
+        foreach (var gameObject in prefabs)
         {
-            try
-            {
-                Debug.Log("Prefab Patch started");
-                foreach (var gameObject in prefabs)
-                {
-                    Thing thing = gameObject.GetComponent<Thing>();
-                    // Additional patching goes here, like setting references to materials(colors) or tools from the game
-                    if (thing != null)
-                    {
-                        Debug.Log(gameObject.name + " added to WorldManager");
-                        WorldManager.Instance.SourcePrefabs.Add(thing);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.Log(ex.Message);
-                Debug.LogException(ex);
-            }
+          Thing thing = gameObject.GetComponent<Thing>();
+          // Additional patching goes here, like setting references to materials(colors) or tools from the game
+          if (thing == null)
+            continue;
+          if (thing is IPatchOnLoad patch)
+            patch.PatchOnLoad();
+          WorldManager.Instance.AddPrefab(thing);
         }
+      }
+      catch (Exception ex)
+      {
+        Debug.Log(ex.Message);
+        Debug.LogException(ex);
+      }
     }
+  }
+
+  public interface IPatchOnLoad
+  {
+    void PatchOnLoad();
+  }
 }
