@@ -16,6 +16,8 @@ namespace ExampleBoard
     }
 
     public PlacementBoard Board { get; set; }
+    public PlacementBoard.BoardCell[] BoardCells { get; set; }
+
     public void PatchOnLoad()
     {
       foreach (var renderer in this.GetComponentsInChildren<MeshRenderer>())
@@ -23,6 +25,11 @@ namespace ExampleBoard
         renderer.sharedMaterial = StationeersModsUtility.GetMaterial(StationeersColor.WHITE, ShaderType.NORMAL);
       }
       this.BuildStates[0].Tool.ToolExit = StationeersModsUtility.FindTool(StationeersTool.DRILL);
+    }
+
+    public override CanConstructInfo CanConstruct()
+    {
+      return BoardStructureHooks.CanConstruct(this);
     }
   }
 }
