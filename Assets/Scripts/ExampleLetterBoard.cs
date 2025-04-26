@@ -8,11 +8,11 @@ namespace ExampleBoard
 {
   public class ExampleLetterBoard : PlacementBoard
   {
-    public override PlacementBoardStructure EquivalentStructure(Structure structure)
+    public override IPlacementBoardStructure EquivalentStructure(Structure structure)
     {
       if (structure == null) return null;
       if (structure.name == "StructureBigA")
-        return Prefab.Find("StructureSmallB") as PlacementBoardStructure;
+        return Prefab.Find("StructureSmallB") as IPlacementBoardStructure;
       return null;
     }
   }

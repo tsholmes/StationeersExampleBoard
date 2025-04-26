@@ -1,13 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Objects;
 using LibConstruct;
 using StationeersMods.Interface;
 using UnityEngine;
 
 namespace ExampleBoard
 {
-  public class SmallLetter : PlacementBoardStructure, IPatchOnLoad
+  public class SmallLetter : SmallGrid, IPlacementBoardStructure, IPatchOnLoad
   {
+    public override void Awake()
+    {
+      base.Awake();
+      BoardStructureHooks.Awake(this);
+    }
+
+    public PlacementBoard Board { get; set; }
     public void PatchOnLoad()
     {
       foreach (var renderer in this.GetComponentsInChildren<MeshRenderer>())
