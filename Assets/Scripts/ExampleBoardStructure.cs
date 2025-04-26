@@ -49,6 +49,7 @@ namespace ExampleBoard
       {
         renderer.sharedMaterial = StationeersModsUtility.GetMaterial(StationeersColor.BLACK, ShaderType.NORMAL);
       }
+      this.BuildStates[0].Tool.ToolExit = StationeersModsUtility.FindTool(StationeersTool.DRILL);
     }
   }
 }

@@ -228,8 +228,8 @@ MonoBehaviour:
       EntryQuantity2: 0
       ToolUseType: 0
       ToolExit: {fileID: 0}
-      ExitTime: 0
-      ExitQuantity: 0
+      ExitTime: 0.5
+      ExitQuantity: 1000
     ColliderMode: 0
     Colliders: []
     LinkedGameObjects: []
