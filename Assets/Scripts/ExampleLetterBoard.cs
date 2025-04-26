@@ -11,9 +11,13 @@ namespace ExampleBoard
     public override IPlacementBoardStructure EquivalentStructure(Structure structure)
     {
       if (structure == null) return null;
-      if (structure.name == "StructureBigA")
-        return Prefab.Find("StructureSmallB") as IPlacementBoardStructure;
-      return null;
+      return structure.name switch
+      {
+        "StructureBigA" => Prefab.Find("StructureSmallA"),
+        "StructureBigB" => Prefab.Find("StructureSmallB"),
+        "StructureBigC" => Prefab.Find("StructureSmallC"),
+        _ => null
+      } as IPlacementBoardStructure;
     }
   }
 }
