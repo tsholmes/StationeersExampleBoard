@@ -8,6 +8,8 @@ namespace ExampleBoard
 {
   public class ExampleLetterBoard : PlacementBoard
   {
+    public override float GridSize => 0.5f / 8;
+
     public override IPlacementBoardStructure EquivalentStructure(Structure structure)
     {
       if (structure == null) return null;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.GridSystem;
 using Assets.Scripts.Objects;
 using LibConstruct;
 using StationeersMods.Interface;
@@ -30,6 +31,36 @@ namespace ExampleBoard
     public override CanConstructInfo CanConstruct()
     {
       return BoardStructureHooks.CanConstruct(this);
+    }
+
+    public override void OnDeregistered()
+    {
+      base.OnDeregistered();
+      BoardStructureHooks.OnDeregistered(this);
+    }
+
+    public override ThingSaveData SerializeSave()
+    {
+      var saveData = new SmallLetterSaveData();
+      var baseData = saveData as ThingSaveData;
+      this.InitialiseSaveData(ref baseData);
+      return saveData;
+    }
+
+    protected override void InitialiseSaveData(ref ThingSaveData baseData)
+    {
+      base.InitialiseSaveData(ref baseData);
+      if (baseData is not SmallLetterSaveData saveData)
+        return;
+      saveData.Board = BoardStructureHooks.SerializeSave(this);
+    }
+
+    public override void DeserializeSave(ThingSaveData baseData)
+    {
+      base.DeserializeSave(baseData);
+      if (baseData is not SmallLetterSaveData saveData)
+        return;
+      BoardStructureHooks.DeserializeSave(this, saveData.Board);
     }
   }
 }
