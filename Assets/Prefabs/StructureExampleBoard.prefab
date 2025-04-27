@@ -306,7 +306,8 @@ MonoBehaviour:
   requiresFrame: 0
   HasDataConnection: 0
   BoardOrigin: {fileID: 8901045748267666350}
-  BoardCollider: {fileID: 4945373282049070620}
+  BoardColliders:
+  - {fileID: 4945373282049070620}
 --- !u!1001 &7600396446227402070
 PrefabInstance:
   m_ObjectHideFlags: 0

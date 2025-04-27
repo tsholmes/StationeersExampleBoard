@@ -542,6 +542,7 @@ MonoBehaviour:
   MaxQuantity: 10
   Constructables:
   - {fileID: 7057224291226184374, guid: f6441bc3a678fe946bcd8f2a367870fd, type: 3}
+  - {fileID: 7057224291226184374, guid: b85cd5e31719ce74e88775fa7b3088cb, type: 3}
   - {fileID: 3003273314395844996, guid: 4397294a107c17549a4c3eb7cbcd5e7f, type: 3}
   - {fileID: 3003273314395844996, guid: c96c7e667f16cbb4eb73cf41c71a029f, type: 3}
   - {fileID: 3003273314395844996, guid: d359e578fe4cc844593eb0d3e88d4e45, type: 3}

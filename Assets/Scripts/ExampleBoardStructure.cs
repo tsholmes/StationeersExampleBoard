@@ -12,7 +12,7 @@ namespace ExampleBoard
   public class ExampleBoardStructure : SmallGrid, IPlacementBoardHost, IPatchOnLoad
   {
     public Transform BoardOrigin;
-    public BoxCollider BoardCollider;
+    public List<BoxCollider> BoardColliders = new();
 
     private BoardRef<ExampleLetterBoard> BoardRef;
     public ExampleLetterBoard Board => BoardRef?.Board;
@@ -74,7 +74,8 @@ namespace ExampleBoard
     public IEnumerable<BoxCollider> CollidersForBoard(PlacementBoard board)
     {
       if (board == this.Board)
-        yield return this.BoardCollider;
+        return this.BoardColliders;
+      return new List<BoxCollider>();
     }
 
     public IEnumerable<PlacementBoard> GetPlacementBoards()
