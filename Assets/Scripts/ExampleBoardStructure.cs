@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.GridSystem;
+using Assets.Scripts.Networking;
 using Assets.Scripts.Objects;
 using LibConstruct;
 using StationeersMods.Interface;
@@ -58,6 +59,18 @@ namespace ExampleBoard
       this.Board?.RemoveHost(this);
     }
 
+    public override void SerializeOnJoin(RocketBinaryWriter writer)
+    {
+      base.SerializeOnJoin(writer);
+      BoardHostHooks.SerializeBoardOnJoin(writer, this, this.Board);
+    }
+
+    public override void DeserializeOnJoin(RocketBinaryReader reader)
+    {
+      base.DeserializeOnJoin(reader);
+      BoardHostHooks.DeserializeBoardOnJoin(reader, this, out this.BoardRef, this.BoardOrigin);
+    }
+
     public IEnumerable<BoxCollider> CollidersForBoard(PlacementBoard board)
     {
       if (board == this.Board)
@@ -77,5 +90,9 @@ namespace ExampleBoard
       }
       this.BuildStates[0].Tool.ToolExit = StationeersModsUtility.FindTool(StationeersTool.DRILL);
     }
+
+    public void OnBoardStructureRegistered(PlacementBoard board, IPlacementBoardStructure structure) { }
+
+    public void OnBoardStructureDeregistered(PlacementBoard board, IPlacementBoardStructure structure) { }
   }
 }

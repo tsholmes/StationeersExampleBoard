@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.GridSystem;
+using Assets.Scripts.Networking;
 using Assets.Scripts.Objects;
 using LibConstruct;
 using StationeersMods.Interface;
@@ -61,6 +62,18 @@ namespace ExampleBoard
       if (baseData is not SmallLetterSaveData saveData)
         return;
       BoardStructureHooks.DeserializeSave(this, saveData.Board);
+    }
+
+    public override void SerializeOnJoin(RocketBinaryWriter writer)
+    {
+      base.SerializeOnJoin(writer);
+      BoardStructureHooks.SerializeOnJoin(writer, this);
+    }
+
+    public override void DeserializeOnJoin(RocketBinaryReader reader)
+    {
+      base.DeserializeOnJoin(reader);
+      BoardStructureHooks.DeserializeOnJoin(reader, this);
     }
   }
 }
