@@ -56,7 +56,7 @@ namespace ExampleBoard
     public override void OnDestroy()
     {
       base.OnDestroy();
-      this.Board?.RemoveHost(this);
+      BoardHostHooks.OnDestroyedBoard(this, this.BoardRef);
     }
 
     public override void SerializeOnJoin(RocketBinaryWriter writer)
