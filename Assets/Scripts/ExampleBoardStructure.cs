@@ -9,13 +9,17 @@ using UnityEngine;
 
 namespace ExampleBoard
 {
-  public class ExampleBoardStructure : SmallGrid, IPlacementBoardHost, IPatchOnLoad
+  public class ExampleBoardStructure : SmallGrid, IPlacementBoardHost, IPatchOnLoad, IPseudoNetworkMember<ExampleBoardStructure>
   {
+    public static PseudoNetworkType<ExampleBoardStructure> BoardNetworkType = new();
+
     public Transform BoardOrigin;
     public List<BoxCollider> BoardColliders = new();
 
     private BoardRef<ExampleLetterBoard> BoardRef;
     public ExampleLetterBoard Board => BoardRef?.Board;
+
+    public PseudoNetwork<ExampleBoardStructure> Network { get; } = BoardNetworkType.Join();
 
     public override ThingSaveData SerializeSave()
     {
@@ -51,6 +55,13 @@ namespace ExampleBoard
     {
       base.OnRegistered(cell);
       BoardHostHooks.OnRegisteredBoard(this, ref this.BoardRef, this.BoardOrigin);
+      BoardNetworkType.RebuildNetworkCreate(this);
+    }
+
+    public override void OnDeregistered()
+    {
+      base.OnDeregistered();
+      BoardNetworkType.RebuildNetworkDestroy(this);
     }
 
     public override void OnDestroy()
@@ -69,6 +80,25 @@ namespace ExampleBoard
     {
       base.DeserializeOnJoin(reader);
       BoardHostHooks.DeserializeBoardOnJoin(reader, this, out this.BoardRef, this.BoardOrigin);
+    }
+
+    public override PassiveTooltip GetPassiveTooltip(Collider hitCollider)
+    {
+      if (this.BoardColliders.Contains(hitCollider as BoxCollider))
+      {
+        var count = 0;
+        foreach (var board in this.Network.Members)
+        {
+          count += board.Board.Structures.Count;
+        }
+        var tooltip = new PassiveTooltip
+        {
+          Title = this.DisplayName,
+          Extended = $"{count} board structures"
+        };
+        return tooltip;
+      }
+      return base.GetPassiveTooltip(hitCollider);
     }
 
     public IEnumerable<BoxCollider> CollidersForBoard(PlacementBoard board)
@@ -90,10 +120,27 @@ namespace ExampleBoard
         renderer.sharedMaterial = StationeersModsUtility.GetMaterial(StationeersColor.BLACK, ShaderType.NORMAL);
       }
       this.BuildStates[0].Tool.ToolExit = StationeersModsUtility.FindTool(StationeersTool.DRILL);
+
+      BoardNetworkType.PatchConnections(this);
     }
 
     public void OnBoardStructureRegistered(PlacementBoard board, IPlacementBoardStructure structure) { }
 
     public void OnBoardStructureDeregistered(PlacementBoard board, IPlacementBoardStructure structure) { }
+
+    IEnumerable<Connection> IPseudoNetworkMember<ExampleBoardStructure>.Connections
+    {
+      get
+      {
+        foreach (var openEnd in this.OpenEnds)
+        {
+          if (openEnd.ConnectionType == 0 || openEnd.ConnectionType == BoardNetworkType.ConnectionType)
+            yield return openEnd;
+        }
+      }
+    }
+    public void OnMemberAdded(ExampleBoardStructure member) { }
+    public void OnMemberRemoved(ExampleBoardStructure member) { }
+    public void OnMembersChanged() { }
   }
 }
