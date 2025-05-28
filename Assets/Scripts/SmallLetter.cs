@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace ExampleBoard
 {
-  public class SmallLetter : SmallGrid, IPlacementBoardStructure, IPatchOnLoad
+  public class SmallLetter : SmallGrid, IPlacementBoardRelocatable, IPatchOnLoad
   {
     public override void Awake()
     {
@@ -75,5 +75,14 @@ namespace ExampleBoard
       base.DeserializeOnJoin(reader);
       BoardStructureHooks.DeserializeOnJoin(reader, this);
     }
+
+    public override DelayedActionInstance AttackWith(Attack attack, bool doAction = true)
+    {
+      if (attack.SourceItem is RelocateTool tool)
+        return BoardRelocateHooks.StructureAttackWith(this, attack, doAction, BoardRelocateHooks.NormalToolRelocateContinue(tool));
+      return base.AttackWith(attack, doAction);
+    }
+
+    public void OnStructureRelocated() { }
   }
 }
